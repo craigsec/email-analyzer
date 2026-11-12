@@ -1,0 +1,17 @@
+# Email Analyzer settings. Every line is optional. Edit here or in the app under Settings.
+# Set these BEFORE building the installer and every PC gets them.
+
+# Language of the app and reports: auto, en or el  (auto = Greek on a Greek Windows, otherwise English)
+LANGUAGE=auto
+
+# Shown in the window title and on reports
+ORG_NAME=
+
+# One brand list for everybody. Put banks.txt on a share that staff can READ but only ICT can change,
+# and give its path here, e.g.  \\server\ict\email-analyzer\banks.txt
+# When the share cannot be reached (laptop at home) the last copy is used.
+SHARED_BANK_LIST=
+
+# Only for mail systems other than Microsoft 365: the server name at the start of YOUR mail server's
+# Authentication-Results header. Results written by any other server are then ignored.
+TRUSTED_AUTHSERV=

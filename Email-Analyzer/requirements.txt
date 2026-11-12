@@ -1,0 +1,20 @@
+# Exact versions the test suite passed with on Windows. Change only after rerunning tests.
+pymupdf==1.28.2
+zxing-cpp==3.1.1
+pillow==13.0.0
+tldextract==5.4.0
+requests==2.34.2
+customtkinter==5.2.2
+tkinterdnd2==0.4.2
+olefile==0.47
+pycdlib==1.22.0
+dnspython==2.9.1
+# their dependencies
+certifi==2026.10.23
+charset-normalizer==3.5.2
+idna==3.20
+urllib3==2.8.0
+filelock==4.2.4
+requests-file==3.0.1
+darkdetect==0.8.0
+packaging==26.3

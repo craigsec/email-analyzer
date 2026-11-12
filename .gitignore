@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build output
+Install/
+Developer/Email-Analyzer/offline/
+*.exe
+
+# Runtime output the tool writes next to whatever you check
+*.emailcheck.html
+*.emailcheck.json
+*_screenshots/
+
+# Local secrets - NEVER commit a filled-in keys.txt
+Email-Analyzer/keys.txt.local
+
+# OS noise
+.DS_Store
+Thumbs.db

@@ -1,0 +1,26 @@
+# Known legitimate brands the checker compares links against.
+# Format:   Name | real domains (comma separated) | brand words to watch for (comma separated)
+#
+# CHECK EVERY DOMAIN HERE YOURSELF against the bank's own website or a statement
+# before you rely on it. Add the banks, payment platforms and vendors you deal with.
+# A link whose hostname contains a brand word but whose real domain is NOT listed
+# for that brand gets flagged HIGH as a fake.
+
+# --- Greek banks ---
+Eurobank            | eurobank.gr                       | eurobank
+National Bank of Greece | nbg.gr                        | nbg, ethniki
+Piraeus Bank        | piraeusbank.gr, winbank.gr        | piraeusbank, winbank
+Alpha Bank          | alpha.gr                          | alphabank, alpha-bank, myalpha
+Attica Bank         | atticabank.gr                     | atticabank
+Optima Bank         | optimabank.gr                     | optimabank
+
+# --- Microsoft 365 (the most common QR phishing target: fake MFA / password reset) ---
+Microsoft 365       | microsoft.com, microsoftonline.com, office.com, office365.com, live.com, outlook.com, sharepoint.com, microsoft365.com, onedrive.com, 1drv.ms, aka.ms, msauth.net, msftauth.net | microsoft, office365, microsoftonline, outlook, sharepoint, onedrive, msonline, m365
+
+# --- Your own company: list your OWN SharePoint/OneDrive tenant so its share links are trusted.
+# Other companies' SharePoint links stay yellow, because anyone can share files there.
+# Our company      | yourcompany.com, yourtenant.sharepoint.com, yourtenant-my.sharepoint.com | yourcompany
+
+# --- Add your own below, e.g. shipping banks, payment platforms, suppliers ---
+# DNB              | dnb.no                            | dnb
+# Example Bank     | examplebank.com, ebank-login.com  | examplebank

@@ -1,0 +1,63 @@
+BUILDING Email-Analyzer-Setup-<version>.exe  |  Email Analyzer Project
+=======================================================================
+The result is an OFFLINE installer: one .exe with Python and every library inside.
+PCs you install it on need NO internet (only the live scan needs internet later).
+
+You build it on one Windows PC with internet and Python 3.11-3.14 (yours):
+
+1. If you received the Developer folder as a zip: right-click it > Properties > tick Unblock
+   > OK, then Extract All.
+2. Double-click Build-Setup.bat (in this Developer folder). It:
+     - downloads the libraries listed in Email-Analyzer\requirements.txt (fetch-wheels.ps1)
+     - downloads the newest Python 3.14 installer from python.org and checks it is
+       signed by the Python Software Foundation (fetch-python.ps1)
+       (both only the first time; they are kept in Email-Analyzer\offline for later builds)
+     - installs Inno Setup 6 (free) with winget if it is missing
+     - packs everything into ..\Install\Email-Analyzer-Setup-<version>.exe  (about 80 MB)
+3. Hand out that .exe (USB stick, network share, Intune...), with Install\README.html.
+
+WHAT THE .EXE DOES ON EACH PC
+  Unpacks itself > setup window > Install >
+  uses an installed Python 3.11-3.14 if there is one, otherwise installs the bundled
+  Python for that user > installs the bundled libraries > shortcuts > Open.
+  No admin rights. No internet. Temporary files are removed afterwards.
+
+KEEPING IT UP TO DATE
+  Python security fixes: delete Email-Analyzer\offline\python-installer.exe
+  and run Build-Setup.bat again to bundle the newest 3.14.
+  Rules or bank list: edit files in Email-Analyzer, run the tests
+  (see tests\README-TESTS.txt), then run Build-Setup.bat again.
+  Library versions are pinned in requirements.txt to the versions that passed the
+  tests. After changing a version, empty Email-Analyzer\offline\wheels so the build
+  downloads the new files.
+
+Do NOT put real API keys in Email-Analyzer\keys.txt before building:
+everyone who gets the .exe would get your keys.
+
+SIGNING THE INSTALLER
+  Unsigned, the .exe can trigger "Windows protected your PC" (SmartScreen) when it was
+  downloaded or copied from the internet. Signing needs a code-signing certificate issued
+  to THE COMPANY. Nobody can sign without one, and it must never be a personal certificate.
+
+  Two ways to get one:
+    A. Microsoft Azure Artifact Signing (formerly Trusted Signing). A monthly Azure service;
+       the company is validated once by Microsoft. No USB token.
+    B. An OV code-signing certificate from a certificate authority (DigiCert, Sectigo,
+       GlobalSign, SSL.com...). Comes on a USB token; renew about every year.
+  If the tool only goes to company PCs through Intune or a software share, ask first whether
+  signing is needed at all: files deployed that way do not carry the "from the internet" mark.
+
+  Once you have the certificate:
+    1. Install the Windows SDK "Signing Tools" (gives signtool.exe) on the build PC.
+    2. Copy sign-settings.example.bat to sign-settings.bat and fill in ONE option.
+    3. Run Build-Setup.bat. It signs ..\Install\Email-Analyzer-Setup-<version>.exe with a timestamp and
+       verifies the signature. Read the last lines: it says clearly if signing failed.
+    4. Check yourself: right-click the .exe > Properties > Digital Signatures.
+  The timestamp matters: it keeps the signature valid after the certificate expires.
+  A newly signed file can still show the SmartScreen warning for a while; reputation is
+  built as the file is used.
+  Not signed by this step: setup\install.ps1 and uninstall.ps1 inside the installer. They
+  run with -ExecutionPolicy Bypass. If company policy requires signed scripts, sign those
+  two with Set-AuthenticodeSignature BEFORE running Build-Setup.bat.
+  This signing step was written without a certificate to test it. Try it once and check
+  step 4 before relying on it.

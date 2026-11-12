@@ -1,0 +1,9 @@
+# Optional API keys. Leave blank to skip that check.
+# urlscan.io (free account): https://urlscan.io/user/profile/  -> API key
+#   This is the check that follows redirects and screenshots the real landing page.
+#   Scans are submitted as PRIVATE.
+URLSCAN_API_KEY=
+
+# VirusTotal (free account): https://www.virustotal.com/gui/my-apikey
+#   Only the DOMAIN is looked up, the full link is never sent.
+VT_API_KEY=

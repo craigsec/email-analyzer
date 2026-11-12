@@ -1,0 +1,2 @@
+# Domains watched for lookalikes (one per line): our own domains and key partners.
+# Also treated as 'our company' in email and link checks. Edit here or on the Domain watch page.
