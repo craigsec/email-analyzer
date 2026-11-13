@@ -3,8 +3,10 @@ Settings for Email Analyzer, read from config.txt next to the program.
 
 config.txt is plain  NAME=value  lines. Everything is optional:
   LANGUAGE=auto            auto | en | el   (auto = Greek on a Greek Windows, otherwise English)
-  ORG_NAME=                shown in the window title and on reports, e.g. "Example Shipping ICT"
-  SHARED_BANK_LIST=        path to ONE brand list everybody uses, e.g. \\\\server\\ict\\banks.txt
+  THEME=auto               auto | light | dark   (auto = follow Windows' own Light/Dark setting,
+                           otherwise dark -- this app's original look)
+  ORG_NAME=                shown in the window title and on reports, e.g. "Example Shipping Security"
+  SHARED_BANK_LIST=        path to ONE brand list everybody uses, e.g. \\\\server\\security\\banks.txt
   TRUSTED_AUTHSERV=        only for mail systems other than Microsoft 365: the name your own mail
                            server writes at the start of its Authentication-Results header
 API keys are NOT kept here (see keys.txt).
@@ -13,7 +15,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 FILE = HERE / "config.txt"
-DEFAULTS = {"LANGUAGE": "auto", "ORG_NAME": "", "SHARED_BANK_LIST": "", "TRUSTED_AUTHSERV": ""}
+DEFAULTS = {"LANGUAGE": "auto", "THEME": "auto", "ORG_NAME": "", "SHARED_BANK_LIST": "", "TRUSTED_AUTHSERV": ""}
 MAX_LIST_BYTES = 1024 * 1024      # a brand list is a few KB; refuse anything silly
 
 

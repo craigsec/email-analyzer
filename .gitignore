@@ -7,6 +7,7 @@ venv/
 # Build output
 Install/
 Developer/Email-Analyzer/offline/
+Email-Analyzer/offline/
 *.exe
 
 # Runtime output the tool writes next to whatever you check

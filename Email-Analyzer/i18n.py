@@ -96,7 +96,7 @@ UI_EL = {
     "Ready": "Έτοιμο", "Ready.": "Έτοιμο.", "Checking...": "Έλεγχος...", "Starting...": "Εκκίνηση...", "Done.": "Ολοκληρώθηκε.",
     "What to do": "Τι να κάνετε", "What to do:": "Τι να κάνετε:",
     # header and sidebar
-    "ICT security tool  ·  Email, attachment and link phishing check": "Εργαλείο ασφάλειας ICT  ·  Έλεγχος email, συνημμένων και συνδέσμων για phishing",
+    "Cybersecurity Tool  ·  Email, attachment and link phishing check": "Εργαλείο Κυβερνοασφάλειας  ·  Έλεγχος email, συνημμένων και συνδέσμων για phishing",
     "Check files": "Έλεγχος αρχείων", "Domain watch": "Παρακολούθηση domain", "Bank list": "Λίστα τραπεζών",
     "Settings": "Ρυθμίσεις", "Help": "Βοήθεια",
     "Drop an email or attachment": "Σύρετε εδώ email ή συνημμένο",

@@ -4,6 +4,9 @@
 # Language of the app and reports: auto, en or el  (auto = Greek on a Greek Windows, otherwise English)
 LANGUAGE=auto
 
+# Appearance: auto, light or dark  (auto = follow Windows' own Light/Dark setting, otherwise dark)
+THEME=auto
+
 # Shown in the window title and on reports
 ORG_NAME=
 

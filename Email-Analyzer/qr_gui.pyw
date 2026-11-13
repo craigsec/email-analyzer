@@ -39,27 +39,65 @@ APP_NAME = "Email Analyzer"
 APP_VERSION = "2.3"
 
 # ------------------------------------------------------------------- look
-ctk.set_appearance_mode("dark")
-ORG = appconfig.org_name()   # ORG_NAME in config.txt; shown in the title bar and reports
-# Brand colours: navy #004680, blue #008AD8, mid blue #0069B1, grey #888B8D
-BRAND_NAVY, BRAND_BLUE, BRAND_MID, BRAND_GREY = "#004680", "#008ad8", "#0069b1", "#888b8d"
-NAVY_0 = "#051526"   # window
-NAVY_1 = "#0a2238"   # panels
-NAVY_2 = "#0f2d4a"   # cards
-NAVY_3 = "#173d63"   # buttons / borders
-HOVER = "#1d4f7f"
-TEXT, MUTED, BODY = "#eaf2fa", "#93a9bf", "#c9d5e6"
-ACCENT, ACCENT_HOVER = BRAND_BLUE, BRAND_MID
+def _detect_theme():
+    """THEME=auto|light|dark in config.txt. auto follows Windows' own Light/Dark setting;
+    anywhere that can't be read (not Windows, or the registry key is missing), auto falls
+    back to dark -- this app's original look, so existing installs don't change by surprise."""
+    cfg = appconfig.get("THEME").strip().lower()
+    if cfg in ("light", "dark"):
+        return cfg
+    try:
+        if os.name == "nt":
+            import winreg
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                  r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize")
+            value, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
+            return "light" if value == 1 else "dark"
+    except Exception:
+        pass
+    return "dark"
 
-LEVELS = {
-    "danger": {"label": "DANGEROUS", "color": "#e5484d", "soft": "#3a1d24"},
-    "warn":   {"label": "SUSPICIOUS", "color": "#f5a524", "soft": "#3a2f17"},
-    "minor":  {"label": "LOW RISK", "color": "#d6c15a", "soft": "#2f2c1a"},
-    "known":  {"label": "KNOWN SITE", "color": "#30a46c", "soft": "#173528"},
-    "clean":  {"label": "NO FLAGS", "color": "#7b8ca6", "soft": "#1d2738"},
-    "info":   {"label": "NOT A LINK", "color": "#6e8efb", "soft": "#1c2547"},
-}
-FIND_COL = {"HIGH": "#e5484d", "MEDIUM": "#f5a524", "LOW": "#d6c15a", "GOOD": "#30a46c", "INFO": "#7b8ca6"}
+
+THEME = _detect_theme()
+ctk.set_appearance_mode(THEME)
+ORG = appconfig.org_name()   # ORG_NAME in config.txt; shown in the title bar and reports
+# Brand colours: navy #004680, blue #008AD8, mid blue #0069B1, grey #888B8D -- same in both themes.
+# The top header bar always stays this navy (like letterhead); only the body below follows THEME.
+BRAND_NAVY, BRAND_BLUE, BRAND_MID, BRAND_GREY = "#004680", "#008ad8", "#0069b1", "#888b8d"
+
+if THEME == "light":
+    NAVY_0 = "#eef2f7"   # window
+    NAVY_1 = "#ffffff"   # panels
+    NAVY_2 = "#eef3f9"   # cards
+    NAVY_3 = "#dbe5f0"   # buttons / borders
+    HOVER = "#c7d6e8"
+    TEXT, MUTED, BODY = "#13283e", "#5c7086", "#2c3e52"
+    LEVELS = {
+        "danger": {"label": "DANGEROUS", "color": "#c92a2a", "soft": "#fdecec"},
+        "warn":   {"label": "SUSPICIOUS", "color": "#9a5b0a", "soft": "#fdf1de"},
+        "minor":  {"label": "LOW RISK", "color": "#8a7612", "soft": "#faf6df"},
+        "known":  {"label": "KNOWN SITE", "color": "#1f7a4d", "soft": "#e4f6ec"},
+        "clean":  {"label": "NO FLAGS", "color": "#56657a", "soft": "#eef1f5"},
+        "info":   {"label": "NOT A LINK", "color": "#3b5bdb", "soft": "#e9ecfd"},
+    }
+    FIND_COL = {"HIGH": "#c92a2a", "MEDIUM": "#9a5b0a", "LOW": "#8a7612", "GOOD": "#1f7a4d", "INFO": "#56657a"}
+else:
+    NAVY_0 = "#051526"   # window
+    NAVY_1 = "#0a2238"   # panels
+    NAVY_2 = "#0f2d4a"   # cards
+    NAVY_3 = "#173d63"   # buttons / borders
+    HOVER = "#1d4f7f"
+    TEXT, MUTED, BODY = "#eaf2fa", "#93a9bf", "#c9d5e6"
+    LEVELS = {
+        "danger": {"label": "DANGEROUS", "color": "#e5484d", "soft": "#3a1d24"},
+        "warn":   {"label": "SUSPICIOUS", "color": "#f5a524", "soft": "#3a2f17"},
+        "minor":  {"label": "LOW RISK", "color": "#d6c15a", "soft": "#2f2c1a"},
+        "known":  {"label": "KNOWN SITE", "color": "#30a46c", "soft": "#173528"},
+        "clean":  {"label": "NO FLAGS", "color": "#7b8ca6", "soft": "#1d2738"},
+        "info":   {"label": "NOT A LINK", "color": "#6e8efb", "soft": "#1c2547"},
+    }
+    FIND_COL = {"HIGH": "#e5484d", "MEDIUM": "#f5a524", "LOW": "#d6c15a", "GOOD": "#30a46c", "INFO": "#7b8ca6"}
+ACCENT, ACCENT_HOVER = BRAND_BLUE, BRAND_MID
 RANK = {"danger": 0, "warn": 1, "minor": 2, "known": 3, "clean": 4, "info": 5}
 SKIP_PREFIX = ("urlscan report:", "Screenshot saved:", "Screenshot not ready yet")
 UI_FAMILY = "Segoe UI" if os.name == "nt" else "DejaVu Sans"
@@ -221,7 +259,7 @@ class App(BaseTk):
         self.hdr_name = ctk.CTkLabel(title, text=APP_NAME, font=ui_font(19, "bold"), text_color="#ffffff")
         self.hdr_name.pack(anchor="w")
         # full subtitle when it fits, its first part when space is short, nothing when there is no room (2.3)
-        self.hdr_sub_full = T("ICT security tool  ·  Email, attachment and link phishing check")
+        self.hdr_sub_full = T("Cybersecurity Tool  ·  Email, attachment and link phishing check")
         self.hdr_sub_short = self.hdr_sub_full.split("·")[0].strip()
         self.hdr_sub = ctk.CTkLabel(title, text=self.hdr_sub_full, font=ui_font(12), text_color="#a9c6e3")
         self.hdr_sub.pack(anchor="w")
@@ -299,7 +337,7 @@ class App(BaseTk):
         ctk.CTkLabel(self.drop_zone, text=T("From Outlook (classic), or a saved file.\nDon't open it first."),
                      font=ui_font(11), text_color=MUTED, justify="center").grid(row=2, column=0, pady=(4, 10))
         self.browse_btn = ctk.CTkButton(self.drop_zone, text=T("Browse files"), width=236, height=34, corner_radius=17,
-                                        fg_color=ACCENT, hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
+                                        fg_color=ACCENT, text_color="#ffffff", hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
                                         command=self._browse)
         self.browse_btn.grid(row=3, column=0)
         self.outlook_btn = ctk.CTkButton(self.drop_zone, text=T("Check selected Outlook email"), width=236, height=30,
@@ -500,7 +538,7 @@ class App(BaseTk):
         ctk.CTkSwitch(btns, text=T("Details"), variable=self.detail_var, font=ui_font(12), text_color=MUTED,
                       progress_color=ACCENT, command=self._rerender).pack(side="left", padx=(4, 10))
         self.report_btn = ctk.CTkButton(btns, text=T("Open report"), width=130, height=34, corner_radius=10,
-                                        fg_color=ACCENT, hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
+                                        fg_color=ACCENT, text_color="#ffffff", hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
                                         state="disabled", command=self._open_report)
         accent_button(self.report_btn)
         self.report_btn.pack(side="left", padx=4)
@@ -1075,7 +1113,7 @@ class App(BaseTk):
             self._label(body, T("The age of the domains was not checked. A domain registered days ago is one of the "
                                 "strongest signs of phishing. This sends only the domain names to rdap.org."),
                         11, MUTED, NAVY_1, reserve=120).pack(anchor="w", pady=(8, 4))
-            ctk.CTkButton(body, text=T("Check domain age now"), width=220, height=32, corner_radius=10, fg_color=ACCENT,
+            ctk.CTkButton(body, text=T("Check domain age now"), width=220, height=32, corner_radius=10, fg_color=ACCENT, text_color="#ffffff",
                           hover_color=ACCENT_HOVER, font=ui_font(13, "bold"), command=self._check_age_now).pack(anchor="w")
         self._update_scrollregion()
 
@@ -1127,7 +1165,7 @@ class App(BaseTk):
         self.w_text.pack(fill="x", padx=20)
         ctk.CTkLabel(left, text=T("One per line: our own domains and key partners\n(e.g. our bank, port agents, charterers)."),
                      font=ui_font(11), text_color=MUTED, justify="left").pack(anchor="w", padx=22, pady=(6, 14))
-        self.w_run = ctk.CTkButton(left, text=T("Check for lookalikes"), height=40, corner_radius=10, fg_color=ACCENT,
+        self.w_run = ctk.CTkButton(left, text=T("Check for lookalikes"), height=40, corner_radius=10, fg_color=ACCENT, text_color="#ffffff",
                                    hover_color=ACCENT_HOVER, font=ui_font(14, "bold"), command=self._watch_run)
         self.w_run.pack(fill="x", padx=20)
         ctk.CTkLabel(left, text=T("Builds every typo and lookalike an attacker\ncould register and checks which exist.\n"
@@ -1161,7 +1199,7 @@ class App(BaseTk):
         self.w_btns = wb
         self.w_banner.bind("<Configure>", lambda e: self.after_idle(self._watch_rewrap))
         self.w_report_btn = ctk.CTkButton(wb, text=T("Open report"), width=120, height=34, corner_radius=10,
-                                          fg_color=ACCENT, hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
+                                          fg_color=ACCENT, text_color="#ffffff", hover_color=ACCENT_HOVER, font=ui_font(13, "bold"),
                                           state="disabled", command=self._watch_open_report)
         accent_button(self.w_report_btn)
         self.w_report_btn.pack(side="left", padx=4)
@@ -1424,7 +1462,7 @@ class NoticeDialog(ctk.CTkToplevel):
                      wraplength=540, justify="left").pack(anchor="w", padx=26, pady=(22, 10))
         ctk.CTkLabel(self, text=body, font=ui_font(13), text_color=TEXT,
                      wraplength=540, justify="left").pack(anchor="w", padx=26)
-        ok = ctk.CTkButton(self, text="OK", width=120, height=34, corner_radius=17, fg_color=ACCENT,
+        ok = ctk.CTkButton(self, text="OK", width=120, height=34, corner_radius=17, fg_color=ACCENT, text_color="#ffffff",
                            hover_color=ACCENT_HOVER, font=ui_font(13, "bold"), command=self.destroy)
         ok.pack(anchor="e", padx=26, pady=(18, 20))
         for key in ("<Escape>", "<Return>"):
@@ -1456,7 +1494,7 @@ class PasteDialog(ctk.CTkToplevel):
                      font=ui_font(12), text_color=MUTED, justify="left").pack(anchor="w", padx=24)
         row = ctk.CTkFrame(self, fg_color="transparent")
         row.pack(fill="x", padx=24, pady=18, side="bottom")
-        ctk.CTkButton(row, text=T("Check"), width=120, height=36, fg_color=ACCENT, hover_color=ACCENT_HOVER,
+        ctk.CTkButton(row, text=T("Check"), width=120, height=36, fg_color=ACCENT, text_color="#ffffff", hover_color=ACCENT_HOVER,
                       font=ui_font(13, "bold"), command=self._go).pack(side="right")
         ctk.CTkButton(row, text=T("Cancel"), width=90, height=36, fg_color=NAVY_3, hover_color=HOVER,
                       font=ui_font(13), command=self.destroy).pack(side="right", padx=8)
@@ -1529,7 +1567,7 @@ class SettingsDialog(ctk.CTkToplevel):
                           font=ui_font(13)).pack(anchor="w", padx=26, pady=(4, 0))
         row = ctk.CTkFrame(self, fg_color="transparent")
         row.pack(fill="x", padx=26, pady=22, side="bottom")
-        ctk.CTkButton(row, text=T("Save"), width=110, height=36, fg_color=ACCENT, hover_color=ACCENT_HOVER,
+        ctk.CTkButton(row, text=T("Save"), width=110, height=36, fg_color=ACCENT, text_color="#ffffff", hover_color=ACCENT_HOVER,
                       font=ui_font(13, "bold"), command=self._save).pack(side="right")
         ctk.CTkButton(row, text=T("Cancel"), width=90, height=36, fg_color=NAVY_3, hover_color=HOVER,
                       font=ui_font(13), command=self.destroy).pack(side="right", padx=8)

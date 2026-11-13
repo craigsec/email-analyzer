@@ -79,7 +79,7 @@ if (Test-Path $logoPath) {
     $logo.Image = [System.Drawing.Image]::FromFile($logoPath)
     $logo.SizeMode = 'Zoom'
     $logo.BackColor = $Navy
-    $logo.SetBounds((Sz (28)), (Sz (26)), (Sz (230)), (Sz (44)))
+    $logo.SetBounds((Sz (28)), (Sz (26)), (Sz (44)), (Sz (44)))
     $header.Controls.Add($logo)
 }
 $hdrTitle = New-Object System.Windows.Forms.Label
@@ -91,7 +91,7 @@ $hdrTitle.TextAlign = 'MiddleRight'
 $hdrTitle.SetBounds((Sz (290)), (Sz (24)), (Sz (284)), (Sz (28)))
 $header.Controls.Add($hdrTitle)
 $hdrSub = New-Object System.Windows.Forms.Label
-$hdrSub.Text = "ICT security tool  |  setup v$Version"
+$hdrSub.Text = "Cybersecurity Tool  |  setup v$Version"
 $hdrSub.ForeColor = [System.Drawing.Color]::FromArgb(169, 198, 227)
 $hdrSub.BackColor = $Navy
 $hdrSub.Font = New-Font 9

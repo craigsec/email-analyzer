@@ -323,7 +323,7 @@ def build_html(results, mode, user, brands, when=None):
          f"<style>{CSS}</style><script>{JS}</script></head><body>"]
     h.append("<header>" + (f"<img src='{logo}' alt='{e(org)}'>" if logo else "")
              + f"<div class='t'><h1>{e(T('Email Analyzer report'))}</h1><p>"
-             f"{e(T('ICT security tool  ·  Email, attachment and link phishing check'))}</p></div></header><main>")
+             f"{e(T('Cybersecurity Tool  ·  Email, attachment and link phishing check'))}</p></div></header><main>")
     h.append(f"<p class='meta'>{e(T('Checked'))} {e(i18n.date(when, long=True))}  ·  {e(T('by'))} {e(user)}  ·  {e(mode_shown)}  ·  "
              f"{e(T('links shown here cannot be clicked'))}</p>")
     h.append(f"<div class='banner' style='background:{soft if worst in ('danger', 'warn') else '#fff'}'>"
